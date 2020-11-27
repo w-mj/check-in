@@ -34,15 +34,18 @@ login?image=人脸登录图片
             "id": "renrenjiaohu",
             "name": "人人交互",
             "time": [{
-            	"start_data": "2020-4-14",
-            	"repeat": 14,
+            	"start_week": 1,
+                "end_week": 19,
+                "day": 3,
             	"start_time": "14:00",
             	"end_time": "16:00"
         	}, {
-            	"start_data": "2020-4-16",
-            	"repeat": 14,
+            	"start_week": 1,
+                "end_week": 19,
+                "day": 5,
             	"start_time": "14:00",
             	"end_time": "16:00"
+
         	}],
             "checking": false
         }
@@ -54,7 +57,7 @@ login?image=人脸登录图片
 
 user字段中的token为验证信息，之后所有的请求都需要携带token。
 
-课程信息中的时间字段为数组类型，第一项为第一次上课的日期，其中隐含了上课的星期；第二项为课程重复的次数；第三项和第四项分别为课程的起止时间。checking字段表示该课程是否正在签到。
+课程信息中的时间字段为数组类型，start_week、end_week为起止周数，day为星期几，取值为1-7，start_time与end_time为起止时间。
 
 ```json
 {
@@ -153,3 +156,16 @@ check-in?token=balabala&course-id=1&image=base64...
 }
 ```
 
+## 上传头像
+
+### 请求
+
+```
+upload-image?token=balablaba&image=base64..
+```
+
+### 返回
+
+```json
+{"success": true}
+```
