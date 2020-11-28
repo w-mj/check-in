@@ -86,7 +86,7 @@
 <div class="container">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page"><a href="courses?token={{ token }}">课程列表</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/page/courses?token={{ token }}">课程列表</a></li>
         </ol>
     </nav>
     <div class="jumbotron">
@@ -109,19 +109,19 @@
                 <td>{{ course.id }}</td>
                 <td>{{ course.name }}</td>
                 <td>
-                    {% for t in course.times %}
+                    {% for t in course.time %}
                         {{ t.start_week }}-{{ t.end_week }}周&nbsp;星期{{ t.day }}&nbsp;{{ t.start_time }}-{{ t.end_time }}
                         <br/>
                     {% endfor %}
                 </td>
-                <td><a class="btn btn-primary" href="checkin?token={{ token }}&course={{ course.id }}">开始签到</a></td>
+                <td><a class="btn btn-primary" href="/page/checkin?token={{ token }}&course={{ course.id }}">开始签到</a></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modifyModal"
                                 onclick="modifyCourse({{ course.id }})">
                             修改
                         </button>
-                        <a class="btn btn-warning" href="students?token={{ token }}&course={{ course.id }}">学生列表</a>
+                        <a class="btn btn-warning" href="/page/students?token={{ token }}&course={{ course.id }}">学生列表</a>
                     </div>
                 </td>
             </tr>

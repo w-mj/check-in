@@ -89,7 +89,7 @@ def add_student(request, **kwargs):
     student_name = request.GET.get('student_name')
     try:
         student = get_or_create_student(student_id, student_name)
-    except AppUser.DoesNotExist:
+    except Exception:
         return handler403(request, Exception())
     course_id = request.GET['course_id']
     course = Course.objects.get(id=course_id)

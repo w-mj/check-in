@@ -65,7 +65,7 @@
 <div class="container">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="courses?token={{ token }}">课程列表</a></li>
+            <li class="breadcrumb-item"><a href="/page/courses?token={{ token }}">课程列表</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ course.name }}签到</li>
         </ol>
     </nav>
@@ -88,7 +88,7 @@
         <tbody>
         {% for checkin in checkinList %}
             <tr>
-                <td>{{ cueckin.id }}</td>
+                <td>{{ checkin.id }}</td>
                 <td>{{ checkin.start_time }}</td>
                 <td>
                     {{ checkin.end_time }}

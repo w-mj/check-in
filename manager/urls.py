@@ -1,6 +1,7 @@
 from django.urls import path, include
 import manager.views as v
 import manager.api as api
+import manager.frontend_api as f
 
 api_urls = [
     path('add-course', api.add_course),
@@ -12,8 +13,13 @@ api_urls = [
 ]
 
 urlpatterns = [
-    path('courses', v.course_list),
-    path('checkin', v.checkin_list),
-    path('students', v.student_list),
-    path('api/', include(api_urls))
+    path('page/courses', v.course_list),
+    path('page/checkin', v.checkin_list),
+    path('page/students', v.student_list),
+    path('api/', include(api_urls)),
+    path('login', f.login),
+    path('course-list', f.course_list),
+    path('course-info', f.course_info),
+    path('checkin', f.checkin),
+    path('upload-image', f.upload_image)
 ]

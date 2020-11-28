@@ -12,7 +12,7 @@ def get_user_by_token(func):
         if not token:
             return handler403(request, Exception())
         user = token_service.get_user(token)
-        if not user or user.role != 0:
+        if not user:
             return handler403(request, Exception())
         return func(request, user=user, token=token)
     return _f

@@ -37,7 +37,7 @@
 <div class="container">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="courses?token={{ token }}">课程列表</a></li>
+            <li class="breadcrumb-item"><a href="/page/courses?token={{ token }}">课程列表</a></li>
             <li class="breadcrumb-item active" aria-current="page">学生列表</li>
         </ol>
     </nav>
@@ -82,13 +82,13 @@
         </tbody>
     </table>
     <div class="btn btn-group">
+        <button class="btn btn-info">导入文件<input class="file-input" type="file" name="file" onchange="upload(this)"></button>
         <button class="btn btn-success" onclick="addStudent()">添加学生</button>
-        <button class="btn btn-info">导入文件<input type="file" name="file" onchange="upload(this)"></button>
     </div>
 </div>
 </body>
 <style>
-    input {
+    .file-input {
         position: absolute;
         font-size: 50px;
         opacity: 0;

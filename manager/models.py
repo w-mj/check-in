@@ -18,7 +18,9 @@ class AppUser(models.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "role": self.role
+            "role": self.role,
+            "image": self.image,
+            "token": self.id
         }
 
 
@@ -27,7 +29,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(to=AppUser, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"{self.name}: {self.teacher}"
+        return f"{self.id} {self.name}: {self.teacher}"
 
     @property
     def times(self):
@@ -36,11 +38,13 @@ class Course(models.Model):
 
     @property
     def json(self):
+        last_check = Checkin.objects.filter(course=self).order_by('-id')
         return {
             "id": self.id,
             "name": self.name,
             "teacher_id": self.teacher_id,
-            "times": [x.json for x in self.times]
+            "time": [x.json for x in self.times],
+            "checking": len(last_check) != 0 and last_check.first().end_time is None
         }
 
 
@@ -53,7 +57,7 @@ class CourseTime(models.Model):
     course = models.ForeignKey(to=Course, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"{str(self.course.name)}: {self.start_week}-{self.end_week}星期{self.day} {self.start_time}-{self.end_time}"
+        return f"{self.id} {str(self.course.name)}: {self.start_week}-{self.end_week}星期{self.day} {self.start_time}-{self.end_time}"
 
     @property
     def json(self):
@@ -80,7 +84,7 @@ class Checkin(models.Model):
     count = models.SmallIntegerField(default=1)
 
     def __str__(self):
-        return f"{str(self.course)} {dict(self.checkin_methods)[self.method]}"
+        return f"{self.id} {str(self.course)} {dict(self.checkin_methods)[self.method]}"
 
 
 class History(models.Model):
@@ -90,7 +94,16 @@ class History(models.Model):
     image = models.TextField()
 
     def __str__(self):
-        return f"{str(self.belong)} {self.photographer.id}-->{self.target.id}"
+        return f"{self.id} ({str(self.belong)}) {self.photographer.id}-->{self.target.id}"
+
+    @property
+    def json(self):
+        return {
+            'photographer_id': self.photographer.id,
+            'photographer_name': self.photographer.name,
+            'target_id': self.target.id,
+            'target_name': self.target.name
+        }
 
 
 class JoinClass(models.Model):
@@ -98,4 +111,4 @@ class JoinClass(models.Model):
     user = models.ForeignKey(to=AppUser, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"{str(self.user)} {str(self.course)}"
+        return f"{self.id} {str(self.user)} {str(self.course)}"

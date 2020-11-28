@@ -1,5 +1,5 @@
 /*
-course = {"name": "\u4eba\u4eba\u4ea4\u4e92", "teacher_id": "100", "times": [{"start_week": 1, "end_week": 10, "start_time": "14:00", "end_time": "16:00", "day": 1}, {"start_week": 1, "end_week": 10, "start_time": "14:00", "end_time": "16:00", "day": 6}]}
+course = {"name": "\u4eba\u4eba\u4ea4\u4e92", "teacher_id": "100", "time": [{"start_week": 1, "end_week": 10, "start_time": "14:00", "end_time": "16:00", "day": 1}, {"start_week": 1, "end_week": 10, "start_time": "14:00", "end_time": "16:00", "day": 6}]}
  */
 function initModifyModel(course) {
     $("#modalTimeList").empty()
@@ -7,7 +7,7 @@ function initModifyModel(course) {
     $("#courseName").val(course['name'])
     $("#TeacherName").val(model['user']['name'])
     $("#modalSaveButton").attr('onclick', `addCourse(${course['id']})`)
-    for (let t of course['times']) {
+    for (let t of course['time']) {
         addTimeList(t)
     }
 }
