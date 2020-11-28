@@ -6,14 +6,15 @@
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script type="application/javascript" src="{% static 'checkin.js' %}"></script>
     <meta charset="UTF-8">
     <title>签到页面</title>
-    <script type="application/javascript" src="{% static 'checkin.js' %}"></script>
     <script>
         {% autoescape off %}
             let model = {
-                user: {{ user_json }},
+                token: {{ token }},
                 course: {{ course_json }}
             }
         {% endautoescape %}
@@ -37,10 +38,10 @@
                         <div class="form-group col-md-12">
                             <label for="inputState">签到方式</label>
                             <select id="inputState" class="form-control">
-                                <option selected>自拍</option>
-                                <option>拍同学</option>
-                                <option>被同学拍</option>
-                                <option>拍老师</option>
+                                <option selected value="1">自拍</option>
+                                <option value="2">拍同学</option>
+                                <option value="3">被同学拍</option>
+                                <option value="4">拍老师</option>
                             </select>
                         </div>
 
@@ -55,7 +56,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="checkin()">保存</button>
             </div>
         </div>
     </div>
@@ -80,6 +81,7 @@
             <th scope="col">开始时间</th>
             <th scope="col">结束时间</th>
             <th scope="col">签到方式</th>
+            <th scope="col">拍照数量</th>
             <th scope="col">操作</th>
         </tr>
         </thead>
@@ -88,29 +90,39 @@
             <tr>
                 <td>{{ cueckin.id }}</td>
                 <td>{{ checkin.start_time }}</td>
-                <td>{{ checkin.end_time }}</td>
+                <td>
+                    {{ checkin.end_time }}
+                </td>
                 <td>
                     {% if checkin.method == 1 %}
                         自拍
                     {% elif checkin.method == 2 %}
                         拍别人
                     {% elif checkin.method == 3 %}
-                       被别人拍
+                        被别人拍
                     {% elif checkin.method == 4 %}
                         拍老师
                     {% endif %}
                 </td>
+                <td>{{ checkin.count }}</td>
                 <td>
-                    <div class="btn-group">
-                    <span class="btn btn-primary">下载结果</span>
-                        <span class="btn btn-info">关系图</span>
-                    </div>
+                    {% if checkin.end_time == None %}
+                        <button class="btn btn-danger" onclick="stop_checkin()">结束签到</button>
+                    {% else %}
+                        <div class="btn-group">
+                            <span class="btn btn-primary">下载结果</span>
+                            <span class="btn btn-info">关系图</span>
+                        </div>
+                    {% endif %}
+
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+{% if not checking %}
     <button class="btn btn-success mb-3" data-toggle="modal" data-target="#modifyModal">开始签到</button>
+{% endif %}
 </div>
 </body>
 </html>

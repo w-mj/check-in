@@ -3,7 +3,11 @@ import manager.views as v
 import manager.api as api
 
 api_urls = [
-    path('add-course', api.add_course)
+    path('add-course', api.add_course),
+    path('start-checkin', api.start_checkin),
+    path('stop-checkin', api.stop_checkin),
+    path('add-student', api.add_student),
+    path('del-student', api.del_student)
 ]
 
 urlpatterns = [

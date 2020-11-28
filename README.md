@@ -70,7 +70,7 @@ user字段中的token为验证信息，之后所有的请求都需要携带token
 
 ### 请求
 
-```json
+```
 course-list?token=token
 ```
 

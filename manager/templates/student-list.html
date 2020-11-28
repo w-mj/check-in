@@ -9,16 +9,18 @@
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
     <script type="application/javascript" src="{% static 'code.js' %}"></script>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <script>
         {% autoescape off %}
             let model = {
-                {#user: {{ user_json }},#}
-                {#courses: {{ courses_json }}#}
+                token: {{ token }},
+                course: {{ course_json }}
             }
         {% endautoescape %}
     </script>
+    <script src="{% static 'student-list.js' %}"></script>
 </head>
 <body>
 
@@ -57,15 +59,20 @@
             <tr>
                 <td>{{ stu.id }}</td>
                 <td>{{ stu.name }}</td>
-                <td><img id="img_{{ stu.id }}" width=40 height=40 src="{{ stu.image }}" alt="未上传照片" onclick="showmax('img_{{ stu.id }}')"/></td>
-                <td><button class="btn btn-danger">删除</button> </td>
+                <td>
+                    {% if stu.image %}
+                    <img id="img_{{ stu.id }}" width=40 height=40 src="{{ stu.image }}" alt="未上传照片" onclick="showmax('img_{{ stu.id }}')"/></td>
+                    {% else %}
+                    <span>未上传照片</span>
+                {% endif %}
+                <td><button class="btn btn-danger" onclick="doDelStudent('{{ stu.id }}')">删除</button> </td>
             </tr>
         {% endfor %}
         <tr id="new-student" style="display: none;">
-            <td><label><input type="text" placeholder="学号"/></label></td>
-            <td><label><input type="text" placeholder="姓名"/></label></td>
+            <td><label><input id='new-student-id' type="text" placeholder="学号"/></label></td>
+            <td><label><input id='new-student-name' type="text" placeholder="姓名"/></label></td>
             <td><i>请在移动端上传照片</i></td>
-            <td><button class="btn btn-info">保存</button></td>
+            <td><button class="btn btn-info" onclick="doAddStudent()">保存</button></td>
         </tr>
         </tbody>
     </table>
@@ -75,15 +82,4 @@
     </div>
 </div>
 </body>
-<script>
-    function addStudent() {
-        $("#new-student").show()
-    }
-
-    function showmax(id) {
-        $("#imgModal").attr("src", $("#"+id).attr('src'))
-        $("#myModal").modal('show')
-    }
-
-</script>
 </html>
