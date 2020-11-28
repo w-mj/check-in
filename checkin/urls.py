@@ -20,6 +20,6 @@ import manager.urls
 from checkin import settings
 
 urlpatterns = [
+    path('', include(manager.urls)),
     path('admin/', admin.site.urls),
-    path('m/', include(manager.urls))
 ]

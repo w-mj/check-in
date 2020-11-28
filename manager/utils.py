@@ -5,6 +5,9 @@ class TokenService:
     def get_token(self, uid):
         return uid
     def get_user(self, token):
-        return AppUser.objects.get(id=token)
+        try:
+            return AppUser.objects.get(id=token)
+        except AppUser.DoesNotExist:
+            return None
 
 token_service = TokenService()
