@@ -1,7 +1,6 @@
 import json
 
 from django.conf.urls import handler403
-from django.http import HttpResponse
 from django.shortcuts import render
 from .utils import token_service
 from .models import Course, Checkin, History, JoinClass
@@ -27,6 +26,7 @@ def course_list(request, **kwargs):
         'user_json': json.dumps(user.json),
         'token': kwargs['token'],
         'courses': courses,
+        'user': user,
         'courses_json': json.dumps([x.json for x in courses])
     }
     return render(request, 'course-list.html', context)

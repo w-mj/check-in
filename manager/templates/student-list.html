@@ -22,6 +22,16 @@
 </head>
 <body>
 
+<div class="modal" tabindex="-1" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="imgModal" src="" alt="未上传照片">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -47,7 +57,7 @@
             <tr>
                 <td>{{ stu.id }}</td>
                 <td>{{ stu.name }}</td>
-                <td><button class="btn btn-primary">查看</button></td>
+                <td><img id="img_{{ stu.id }}" width=40 height=40 src="{{ stu.image }}" alt="未上传照片" onclick="showmax('img_{{ stu.id }}')"/></td>
                 <td><button class="btn btn-danger">删除</button> </td>
             </tr>
         {% endfor %}
@@ -68,6 +78,11 @@
 <script>
     function addStudent() {
         $("#new-student").show()
+    }
+
+    function showmax(id) {
+        $("#imgModal").attr("src", $("#"+id).attr('src'))
+        $("#myModal").modal('show')
     }
 
 </script>
