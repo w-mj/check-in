@@ -1,14 +1,12 @@
-import csv
 import json
-import time
-from datetime import datetime, timezone
+from datetime import datetime
 
 from django.conf.urls import handler403
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Course, CourseTime, Checkin, AppUser, JoinClass
-from .views import get_user_by_token
+from .utils import get_user_by_token
 
 
 @get_user_by_token

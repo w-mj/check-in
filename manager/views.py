@@ -1,21 +1,9 @@
 import json
 
-from django.conf.urls import handler403
 from django.shortcuts import render
-from .utils import token_service
-from .models import Course, Checkin, History, JoinClass
 
-
-def get_user_by_token(func):
-    def _f(request, *args, **kwargs):
-        token = request.GET.get('token')
-        if not token:
-            return handler403(request, Exception())
-        user = token_service.get_user(token)
-        if not user:
-            return handler403(request, Exception())
-        return func(request, user=user, token=token)
-    return _f
+from .models import Course, Checkin, JoinClass
+from .utils import get_user_by_token
 
 
 @get_user_by_token

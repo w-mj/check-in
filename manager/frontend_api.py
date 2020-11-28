@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 
 from manager.models import AppUser, Course, JoinClass, Checkin, History
-from .views import get_user_by_token
+from manager.utils import get_user_by_token, check_parameter
 
 
 def login(request):
@@ -35,6 +35,7 @@ def course_list(request, **kwargs):
     })
 
 
+@check_parameter('id')
 @get_user_by_token
 def course_info(request, **kwargs):
     user = kwargs['user']
@@ -50,6 +51,7 @@ def course_info(request, **kwargs):
     return JsonResponse(course_json)
 
 
+@check_parameter('course-id', 'image')
 @get_user_by_token
 def checkin(request, **kwargs):
     course_id = request.GET['course-id']
