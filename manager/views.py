@@ -4,7 +4,7 @@ from django.conf.urls import handler403
 from django.http import HttpResponse
 from django.shortcuts import render
 from .utils import token_service
-from .models import Course, Checkin, History
+from .models import Course, Checkin, History, JoinClass
 
 
 def get_user_by_token(func):
@@ -43,3 +43,17 @@ def checkin_list(request, **kwargs):
         'course': course
     }
     return render(request, 'checkin.html', context)
+
+
+@get_user_by_token
+def student_list(request, **kwargs):
+    course_id = request.GET['course']
+    course = Course.objects.get(id=course_id)
+    students = JoinClass.objects.filter(course=course)
+    students = [x.user for x in students]
+    context = {
+        'students': students,
+        'token': kwargs['token'],
+        'course': course
+    }
+    return render(request, 'student-list.html', context)

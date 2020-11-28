@@ -3,6 +3,7 @@ course = {"name": "\u4eba\u4eba\u4ea4\u4e92", "teacher_id": "100", "times": [{"s
  */
 function initModifyModel(course) {
     $("#modalTimeList").empty()
+    $("#modifyModalHead").text("修改课程")
     $("#courseName").attr('value', course['name'])
     $("#TeacherName").attr('value', model['user']['name'])
     for (let t of course['times']) {
@@ -17,6 +18,7 @@ function modifyCourse(cid) {
 
 function createCourse() {
     $("#modalTimeList").empty()
+    $("#modifyModalHead").text("新建课程")
     $("#courseName").attr('value', null)
     $("#TeacherName").attr('value', null)
     addTimeList()

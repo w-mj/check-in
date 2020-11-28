@@ -28,7 +28,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modifyModalHead">新建课程</h5>
+                <h5 class="modal-title" id="modifyModalHead">修改课程</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -97,7 +97,7 @@
             <th scope="col">名称</th>
             <th scope="col">时间</th>
             <th scope="col">签到</th>
-            <th scope="col">修改</th>
+            <th scope="col">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -113,10 +113,13 @@
                 </td>
                 <td><a class="btn btn-primary" href="checkin?token={{ token }}&course={{ course.id }}">开始签到</a></td>
                 <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modifyModal"
-                            onclick="modifyCourse({{ course.id }})">
-                        修改
-                    </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modifyModal"
+                                onclick="modifyCourse({{ course.id }})">
+                            修改
+                        </button>
+                        <a class="btn btn-warning" href="students?token={{ token }}&course={{ course.id }}">学生列表</a>
+                    </div>
                 </td>
             </tr>
         {% endfor %}

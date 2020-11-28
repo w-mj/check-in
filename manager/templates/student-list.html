@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course.name }}学生列表</title>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="{% static 'code.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script>
+        {% autoescape off %}
+            let model = {
+                {#user: {{ user_json }},#}
+                {#courses: {{ courses_json }}#}
+            }
+        {% endautoescape %}
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="courses?token={{ token }}">课程列表</a></li>
+            <li class="breadcrumb-item active" aria-current="page">学生列表</li>
+        </ol>
+    </nav>
+    <div class="jumbotron">
+        <h1>{{ course.name }}的学生列表</h1>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">学号</th>
+            <th scope="col">姓名</th>
+            <th scope="col">照片</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for stu in students %}
+            <tr>
+                <td>{{ stu.id }}</td>
+                <td>{{ stu.name }}</td>
+                <td><button class="btn btn-primary">查看</button></td>
+                <td><button class="btn btn-danger">删除</button> </td>
+            </tr>
+        {% endfor %}
+        <tr id="new-student" style="display: none;">
+            <td><label><input type="text" placeholder="学号"/></label></td>
+            <td><label><input type="text" placeholder="姓名"/></label></td>
+            <td><i>请在移动端上传照片</i></td>
+            <td><button class="btn btn-info">保存</button></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="btn btn-group">
+        <button class="btn btn-success" onclick="addStudent()">添加学生</button>
+        <button class="btn btn-info">导入文件</button>
+    </div>
+</div>
+</body>
+<script>
+    function addStudent() {
+        $("#new-student").show()
+    }
+
+</script>
+</html>
