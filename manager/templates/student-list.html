@@ -61,25 +61,39 @@
                 <td>{{ stu.name }}</td>
                 <td>
                     {% if stu.image %}
-                    <img id="img_{{ stu.id }}" width=40 height=40 src="{{ stu.image }}" alt="未上传照片" onclick="showmax('img_{{ stu.id }}')"/></td>
+                        <img id="img_{{ stu.id }}" width=40 height=40 src="{{ stu.image }}" alt="未上传照片"
+                             onclick="showmax('img_{{ stu.id }}')"/></td>
                     {% else %}
-                    <span>未上传照片</span>
-                {% endif %}
-                <td><button class="btn btn-danger" onclick="doDelStudent('{{ stu.id }}')">删除</button> </td>
+                        <span>未上传照片</span>
+                    {% endif %}
+                <td>
+                    <button class="btn btn-danger" onclick="doDelStudent('{{ stu.id }}')">删除</button>
+                </td>
             </tr>
         {% endfor %}
         <tr id="new-student" style="display: none;">
             <td><label><input id='new-student-id' type="text" placeholder="学号"/></label></td>
             <td><label><input id='new-student-name' type="text" placeholder="姓名"/></label></td>
             <td><i>请在移动端上传照片</i></td>
-            <td><button class="btn btn-info" onclick="doAddStudent()">保存</button></td>
+            <td>
+                <button class="btn btn-info" onclick="doAddStudent()">保存</button>
+            </td>
         </tr>
         </tbody>
     </table>
     <div class="btn btn-group">
         <button class="btn btn-success" onclick="addStudent()">添加学生</button>
-        <button class="btn btn-info">导入文件</button>
+        <button class="btn btn-info">导入文件<input type="file" name="file" onchange="upload(this)"></button>
     </div>
 </div>
 </body>
+<style>
+    input {
+        position: absolute;
+        font-size: 50px;
+        opacity: 0;
+        right: 0;
+        top: 0;
+    }
+</style>
 </html>

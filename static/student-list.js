@@ -29,3 +29,14 @@ function doDelStudent(id) {
     }
     axios.get('/api/del-student', {params: data}).then(()=>location.reload())
 }
+
+function upload(event) {
+    let file = event.files[0];
+    let formData = new FormData()
+    let params = {
+        token: model.token,
+        course_id: model.course.id
+    }
+    formData.append("file", file)
+    axios.post("/api/upload_student_file", formData, {headers: { 'Content-Type': 'multipart/form-data'}, params: params})
+}

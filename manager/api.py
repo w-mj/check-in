@@ -1,9 +1,11 @@
+import csv
 import json
 import time
 from datetime import datetime, timezone
 
 from django.conf.urls import handler403
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Course, CourseTime, Checkin, AppUser, JoinClass
 from .views import get_user_by_token
@@ -67,21 +69,28 @@ def stop_checkin(request, **kwargs):
     return HttpResponse(json.dumps({"success": True}))
 
 
-@get_user_by_token
-def add_student(request, **kwargs):
-    student_id = request.GET['student_id']
-    student_name = request.GET.get('student_name')
+def get_or_create_student(student_id, student_name):
     try:
         student = AppUser.objects.get(id=student_id)
     except AppUser.DoesNotExist:
         if not student_name:
-            return handler403(request, Exception())
+            raise Exception()
         student = AppUser()
         student.name = student_name
         student.id = student_id
         student.password = student_id
         student.role = 1
         student.save()
+    return student
+
+@get_user_by_token
+def add_student(request, **kwargs):
+    student_id = request.GET['student_id']
+    student_name = request.GET.get('student_name')
+    try:
+        student = get_or_create_student(student_id, student_name)
+    except AppUser.DoesNotExist:
+        return handler403(request, Exception())
     course_id = request.GET['course_id']
     course = Course.objects.get(id=course_id)
     record = JoinClass(course=course, user=student)
@@ -94,4 +103,32 @@ def del_student(request, **kwargs):
     student_id = request.GET['student_id']
     course_id = request.GET['course_id']
     JoinClass.objects.get(course_id=course_id, user_id=student_id).delete()
+    return HttpResponse(json.dumps({"success": True}))
+
+
+def csv_reader(data: str):
+    lines = data.split()
+    head = lines[0]
+    head = head.split(',')
+    lines = lines[1:]
+    for l in lines:
+        ar = l.split(',')
+        yield dict(zip(head, ar))
+
+
+@csrf_exempt
+@get_user_by_token
+def upload_student_file(request, **kwargs):
+    file = request.FILES['file']
+    for line in csv_reader(file.read().decode()):
+        stu_id = line['id']
+        name = line.get('name')
+        try:
+            student = get_or_create_student(stu_id, name)
+            course_id = request.GET['course_id']
+            course = Course.objects.get(id=course_id)
+            record = JoinClass(course=course, user=student)
+            record.save()
+        except Exception:
+            pass
     return HttpResponse(json.dumps({"success": True}))

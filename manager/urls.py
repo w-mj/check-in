@@ -7,7 +7,8 @@ api_urls = [
     path('start-checkin', api.start_checkin),
     path('stop-checkin', api.stop_checkin),
     path('add-student', api.add_student),
-    path('del-student', api.del_student)
+    path('del-student', api.del_student),
+    path('upload_student_file', api.upload_student_file)
 ]
 
 urlpatterns = [
