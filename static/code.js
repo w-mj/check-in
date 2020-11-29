@@ -84,7 +84,7 @@ function addCourse(id=null) {
         }
     }
     console.log(data);
-    axios.get('api/add-course', {params: data}).then(response => {
+    axios.get('/api/add-course', {params: data}).then(response => {
         location.reload();
     })
 }

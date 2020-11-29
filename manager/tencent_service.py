@@ -2,6 +2,7 @@ import json
 from typing import List
 
 from tencentcloud.common import credential
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.iai.v20200303 import iai_client, models
@@ -119,15 +120,8 @@ def delete_face(client, person_id, face_id):
 @request_tencent
 def upload_image(client, person_id, image):
     from manager.models import AppUser, JoinClass
-    info = get_person_info(person_id)
-    if info.get("Error") and info['Error']["Code"] == "InvalidParameterValue.PersonIdNotExist":
-        person = AppUser.objects.get(id=person_id)
-        c = create_person(person_id, person.name, image)
-        class_ids = [x.course_id for x in JoinClass.objects.filter(user=person)]
-        if class_ids:
-            add_to_group(person_id, class_ids)
-        return c
-    else:
+    try:
+        info = get_person_info(person_id)
         if len(info['FaceIds']) == 5:
             delete_face(person_id, info['FaceIds'][0])
         req = models.CreateFaceRequest()
@@ -138,6 +132,16 @@ def upload_image(client, person_id, image):
         req.from_json_string(json.dumps(params))
         resp = client.CreateFace(req)
         return json.loads(resp.to_json_string())
+    except TencentCloudSDKException as e:
+        if e.code == "InvalidParameterValue.PersonIdNotExist":
+            person = AppUser.objects.get(id=person_id)
+            c = create_person(person_id, person.name, image)
+            class_ids = [str(x.course_id) for x in JoinClass.objects.filter(user=person)]
+            if class_ids:
+                print(person_id, class_ids)
+                add_to_group(person_id, class_ids)
+            return c
+        raise e
 
 
 @request_tencent
@@ -157,4 +161,4 @@ def checkin(client, course_id, image):
 
 
 if __name__ == '__main__':
-    print(checkin("lh", "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD"))
+    print(add_to_group("20164488", ['5']))

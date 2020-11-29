@@ -2,6 +2,7 @@ import json
 
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from manager.models import AppUser, Course, JoinClass, Checkin, History
 from manager.utils import get_user_by_token, check_parameter
@@ -59,17 +60,18 @@ def course_info(request, **kwargs):
     return JsonResponse(course_json)
 
 
+@csrf_exempt
 @check_parameter('course-id', 'image')
 @get_user_by_token
 def checkin(request, **kwargs):
-    course_id = request.GET['course-id']
+    course_id = request.POST['course-id']
     course = Course.objects.get(id=course_id)
     last_check = Checkin.objects.filter(course=course).order_by('-id')
     if len(last_check) == 0 or last_check.first().end_time is not None:
         return JsonResponse({"success": False, "message": "签到已经结束"})
     # TODO: 检测该同学已经签到成功
     last_check = last_check.first()
-    image = request.GET['image']
+    image = request.POST['image']
     #  请求腾讯云获得对方user_id
     target_user_id = ts.checkin(course_id, image)
 
@@ -85,10 +87,11 @@ def checkin(request, **kwargs):
     return JsonResponse({"success": True})
 
 
+@csrf_exempt
 @get_user_by_token
 def upload_image(request, **kwargs):
     user = kwargs['user']
-    user.image = request.GET['image']
+    user.image = request.POST['image']
     user.save()
     ts.upload_image(user.id, user.image)
     return JsonResponse({"success": True})

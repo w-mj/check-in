@@ -18,7 +18,7 @@ token_service = TokenService()
 
 def get_user_by_token(func):
     def _f(request, *args, **kwargs):
-        token = request.GET.get('token')
+        token = request.GET.get('token', request.POST.get('token'))
         if not token:
             return JsonResponse({"success": False, "message": f"need `token` parameter"})
         user = token_service.get_user(token)
@@ -32,7 +32,7 @@ def check_parameter(*para):
     def _w(func):
         def _f(request, *args, **kwargs):
             for x in para:
-                if x not in request.GET:
+                if x not in request.GET and x not in request.POST:
                     return JsonResponse({"success": False, "message": f"need `{x}` parameter"})
             return func(request, *args, **kwargs)
         return _f

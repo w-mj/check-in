@@ -20,6 +20,6 @@ urlpatterns = [
     path('login', f.login),
     path('course-list', f.course_list),
     path('course-info', f.course_info),
-    path('checkin', f.checkin),
+    path('check-in', f.checkin),
     path('upload-image', f.upload_image)
 ]

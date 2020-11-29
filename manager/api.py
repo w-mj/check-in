@@ -41,7 +41,7 @@ def add_course(request, **kwargs):
             course=course
         )
         new_time.save()
-    ts.create_group(course.name, course.id)
+    ts.create_group(course.name, str(course.id))
     return HttpResponse(json.dumps({"success": True}))
 
 
@@ -96,6 +96,8 @@ def add_student(request, **kwargs):
     course = Course.objects.get(id=course_id)
     record = JoinClass(course=course, user=student)
     record.save()
+    if student.image:
+        ts.add_to_group(student_id, [str(course_id)])
     return HttpResponse(json.dumps({"success": True}))
 
 

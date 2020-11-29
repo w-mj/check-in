@@ -6,7 +6,7 @@ function checkin() {
         method: $("#inputState").val(),
         count: $("#inputZip").val()
     }
-    axios.get('api/start-checkin', {params: data}).then(()=>{location.reload()})
+    axios.get('/api/start-checkin', {params: data}).then(()=>{location.reload()})
 }
 
 function stop_checkin() {
@@ -14,5 +14,5 @@ function stop_checkin() {
         token: model.token,
         course: model.course.id
     }
-    axios.get('api/stop-checkin', {params: data}).then(()=>location.reload())
+    axios.get('/api/stop-checkin', {params: data}).then(()=>location.reload())
 }
