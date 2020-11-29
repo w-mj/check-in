@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 
 from manager.models import AppUser, Course, JoinClass, Checkin, History
 from manager.utils import get_user_by_token, check_parameter
+import manager.tencent_service as ts
 
 
 def login(request):
@@ -15,11 +16,18 @@ def login(request):
         try:
             user = AppUser.objects.get(id=id)
         except AppUser.DoesNotExist:
-            return HttpResponse(json.dumps({"success": False, "message": "账号或密码错误"}))
+            return JsonResponse({"success": False, "message": "账号或密码错误"})
         if user.password != psw:
-            return HttpResponse(json.dumps({"success": False, "message": "密码错误"}))
+            return JsonResponse({"success": False, "message": "密码错误"})
     else:
-        return HttpResponse(json.dumps({"success": False, "message": "???"}))
+        if image:
+            user_id = ts.checkin("all", image)
+            if user_id:
+                user = AppUser.objects.get(id=id)
+            else:
+                return JsonResponse({"success": False, "message": "人脸识别失败"})
+        else:
+            return JsonResponse({"success": False, "message": "无图片"})
     return JsonResponse({
         'success': True,
         'user': user.json,
@@ -63,7 +71,8 @@ def checkin(request, **kwargs):
     last_check = last_check.first()
     image = request.GET['image']
     #  请求腾讯云获得对方user_id
-    target_user_id = '100'
+    target_user_id = ts.checkin(course_id, image)
+
     user = kwargs['user']
     his = History()
     his.photographer = user
@@ -71,6 +80,8 @@ def checkin(request, **kwargs):
     his.belong = last_check
     his.image = image
     his.save()
+    if not his.target_id:
+        return JsonResponse({"success": False, "message": "人脸识别失败"})
     return JsonResponse({"success": True})
 
 
@@ -79,4 +90,5 @@ def upload_image(request, **kwargs):
     user = kwargs['user']
     user.image = request.GET['image']
     user.save()
+    ts.upload_image(user.id, user.image)
     return JsonResponse({"success": True})

@@ -33,7 +33,7 @@ def check_parameter(*para):
         def _f(request, *args, **kwargs):
             for x in para:
                 if x not in request.GET:
-                    return JsonResponse({"success": False, "message": f"need {x} parameter"})
+                    return JsonResponse({"success": False, "message": f"need `{x}` parameter"})
             return func(request, *args, **kwargs)
         return _f
     return _w

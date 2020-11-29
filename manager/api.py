@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Course, CourseTime, Checkin, AppUser, JoinClass
 from .utils import get_user_by_token
+import manager.tencent_service as ts
 
 
 @get_user_by_token
@@ -40,6 +41,7 @@ def add_course(request, **kwargs):
             course=course
         )
         new_time.save()
+    ts.create_group(course.name, course.id)
     return HttpResponse(json.dumps({"success": True}))
 
 
@@ -81,6 +83,7 @@ def get_or_create_student(student_id, student_name):
         student.save()
     return student
 
+
 @get_user_by_token
 def add_student(request, **kwargs):
     student_id = request.GET['student_id']
@@ -101,6 +104,7 @@ def del_student(request, **kwargs):
     student_id = request.GET['student_id']
     course_id = request.GET['course_id']
     JoinClass.objects.get(course_id=course_id, user_id=student_id).delete()
+    ts.remove_from_group(student_id, course_id)
     return HttpResponse(json.dumps({"success": True}))
 
 
