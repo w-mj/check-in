@@ -17,6 +17,7 @@ urlpatterns = [
     path('page/checkin', v.checkin_list),
     path('page/students', v.student_list),
     path('page/result', v.result),
+    path('page/graph', v.graph),
     path('api/', include(api_urls)),
     path('login', f.login),
     path('course-list', f.course_list),

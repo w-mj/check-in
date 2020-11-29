@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+    <script src="http://cdn.bootcss.com/echarts/3.2.2/echarts.js"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script>
+        {% autoescape off %}
+            let model = {}
+        {% endautoescape %}
+    </script>
+    <meta charset="UTF-8">
+    <title>图</title>
+</head>
+<body>
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a href="/page/courses?token={{ token }}">课程列表</a>
+            </li>
+            <li class="breadcrumb-item active"><a href="/page/checkin?token={{ token }}&course={{ course.id }}">签到</a>
+            </li>
+            <li class="breadcrumb-item active">签到结果</li>
+        </ol>
+    </nav>
+    <div class="jumbotron">
+        <h1>{{ course.name }}的结果关系图</h1>
+    </div>
+
+    <div id="echarts-main" style="height:640px;border:1px dashed;"></div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    {% autoescape off %}
+    var data = {{ res }}
+    var stu_name_list = {{ stu_name_list }};
+    {% endautoescape %}
+
+    function draw(){
+        var graph = data2Graph(data, stu_name_list);
+        drawGraph(graph);
+    }
+
+    function data2Graph(data, stu_name_list) {
+        var graph = {}
+        var vertices = {}
+        var links = [];
+        for (var i = 0; i < data.length; i++) {
+            var s = String(data[i][0]);
+            var t = String(data[i][1]);
+            {#var v = data[i][2];#}
+            vertices[s] = s;
+            vertices[t] = t;
+            links.push({'source' : s, 'target' : t});
+        }
+        console.log(vertices);
+        var nodes = [];
+        $.each(vertices, function(k, v) {
+            console.log(k, v)
+            nodes.push({'name' : v, 'value' : stu_name_list[v]});
+        });
+        graph['links'] = links;
+        graph['data'] = nodes;
+        return graph;
+    }
+
+    function drawGraph(graph) {
+        var myChart = echarts.init(document.getElementById("echarts-main"));
+        var option = {
+            tooltip: {},
+            series : [
+                {
+                    type: 'graph',
+                    layout: 'force',
+                    symbolSize: 30,
+                    edgeSymbol: ['none', 'arrow'],
+                    data: graph.data,
+                    links: graph.links,
+                    roam: true,
+                    label: {
+                        normal: {
+                            show: true,
+                            formatter: function (e) {
+                                return e['data']['value'];
+                            }
+                        }
+                    },
+                    edgeLabel: {
+                        normal: {
+                            show: false,
+                            position: 'middle'
+                        }
+                    },
+                    force: {
+                        repulsion: 1000,
+                        edgeLength: 200
+                    }
+                }
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    $(document).ready(function(){
+        draw();
+    })
+</script>
+</html>

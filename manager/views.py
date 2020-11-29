@@ -64,3 +64,19 @@ def result(request, **kwargs):
         'course': checkin.course
     }
     return render(request, 'result.html', context)
+
+
+@get_user_by_token
+def graph(request, **kwargs):
+    checkin_id = request.GET['id']
+    checkin = Checkin.objects.get(id=checkin_id)
+    res, stu_list = checkin.result()
+    res = [[x.photographer.id, x.target_id] for x in res]
+    stu_name_list = {x: AppUser.objects.get(id=x).name for x,_ in stu_list}
+    context = {
+        'token': kwargs['token'],
+        'course': checkin.course,
+        'res': json.dumps(res),
+        'stu_name_list': stu_name_list
+    }
+    return render(request, 'graph.html', context)
