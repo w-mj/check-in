@@ -110,7 +110,7 @@
                         <button class="btn btn-danger" onclick="stop_checkin()">结束签到</button>
                     {% else %}
                         <div class="btn-group">
-                            <span class="btn btn-primary">下载结果</span>
+                            <a class="btn btn-primary" href="/page/result?id={{ checkin.id }}&token={{ token }}">详情</a>
                             <span class="btn btn-info">关系图</span>
                         </div>
                     {% endif %}

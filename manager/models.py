@@ -32,7 +32,7 @@ class Course(models.Model):
         return f"{self.id} {self.name}: {self.teacher}"
 
     @property
-    def times(self):
+    def time(self):
         times = CourseTime.objects.filter(course=self)
         return times
 
@@ -43,7 +43,7 @@ class Course(models.Model):
             "id": self.id,
             "name": self.name,
             "teacher_id": self.teacher_id,
-            "time": [x.json for x in self.times],
+            "time": [x.json for x in self.time],
             "checking": len(last_check) != 0 and last_check.first().end_time is None
         }
 
@@ -85,6 +85,31 @@ class Checkin(models.Model):
 
     def __str__(self):
         return f"{self.id} {str(self.course)} {dict(self.checkin_methods)[self.method]}"
+
+    def result(self):
+        his = History.objects.filter(belong=self)
+        res = [(x.photographer_id, x.target_id, x) for x in his]
+        res_filter = {
+            1: lambda x: x[0] == x[1],
+            2: lambda x: x[0] != x[1],
+            3: lambda x: x[0] != x[1],
+            4: lambda x: x[1] == self.course.teacher_id
+        }
+        res = [x for x in res if res_filter[self.method](x)]
+        stu_id_lst = [x.user_id for x in JoinClass.objects.filter(course=self.course)]
+        cnt_photos = {x: 0 for x in stu_id_lst}
+        cnt_photos_by = {x: 0 for x in stu_id_lst}
+        for x in res:
+            cnt_photos[x[0]] += 1
+            cnt_photos_by[x[1]] += 1
+        suc_filter = {
+            1: lambda x: cnt_photos[x] >= 1,
+            2: lambda x: cnt_photos[x] >= self.count,
+            3: lambda x: cnt_photos_by[x] >= self.count,
+            4: lambda x: cnt_photos[x] >= 1
+        }
+        stu_sec = [(x, suc_filter[self.method](x)) for x in stu_id_lst]
+        return [x[2] for x in res], stu_sec
 
 
 class History(models.Model):

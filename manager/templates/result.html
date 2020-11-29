@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script>
+        {% autoescape off %}
+            let model = {}
+        {% endautoescape %}
+    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a href="/page/courses?token={{ token }}">课程列表</a>
+            </li>
+            <li class="breadcrumb-item active"><a href="/page/checkin?token={{ token }}&course={{ course.id }}">签到</a>
+            </li>
+            <li class="breadcrumb-item active">签到结果</li>
+        </ol>
+    </nav>
+    <div class="jumbotron">
+        <h1>{{ course.name }}的签到结果</h1>
+    </div>
+    <div class="row">
+
+        <div class="col-md-8">
+            <h2>学生名单</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>结果</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stu,res in stu_list %}
+                    <tr>
+                        <td>{{ stu.id }}</td>
+                        <td>{{ stu.name }}</td>
+                        <td>
+                            {% if res %}
+                            <span style="color: green;">签到成功</span>
+                            {% else %}
+                            <span style="color: red;">尚未签到</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <h2>签到详情</h2>
+            <table class="table">
+                <thead>
+                <tr><td>拍照人</td><td>被拍照人</td></tr>
+                </thead>
+                <tbody>
+                {% for r in res %}
+                    <tr>
+                        <td>{{ r.photographer.name }}</td><td>{{ r.target.name }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

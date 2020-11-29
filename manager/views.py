@@ -2,7 +2,7 @@ import json
 
 from django.shortcuts import render
 
-from .models import Course, Checkin, JoinClass
+from .models import Course, Checkin, JoinClass, AppUser
 from .utils import get_user_by_token
 
 
@@ -49,3 +49,18 @@ def student_list(request, **kwargs):
         'course_json': json.dumps(course.json)
     }
     return render(request, 'student-list.html', context)
+
+
+@get_user_by_token
+def result(request, **kwargs):
+    checkin_id = request.GET['id']
+    checkin = Checkin.objects.get(id=checkin_id)
+    res, stu_list = checkin.result()
+    stu_list = [(AppUser.objects.get(id=x[0]), x[1]) for x in stu_list]
+    context = {
+        'token': kwargs['token'],
+        'res': res,
+        'stu_list': stu_list,
+        'course': checkin.course
+    }
+    return render(request, 'result.html', context)
