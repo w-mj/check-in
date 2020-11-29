@@ -139,9 +139,14 @@ result为签到结果数组。photographer为拍照人，target为被拍照人�
 ## 签到
 
 ### 请求
-
+**签到使用POST请求，参数使用x-www-form-urlencoded**
 ```
-check-in?token=balabala&course-id=1&image=base64...
+check-in
+```
+
+###参数
+```
+token=balabala&course-id=1&image=base64...
 ```
 
 ### 返回
@@ -157,11 +162,16 @@ check-in?token=balabala&course-id=1&image=base64...
 ```
 
 ## 上传头像
-
+**上传头像使用POST请求，参数使用x-www-form-urlencoded**
 ### 请求
 
 ```
-upload-image?token=balablaba&image=base64..
+upload-image
+```
+
+### 参数
+```
+token=balablaba&image=base64..
 ```
 
 ### 返回
